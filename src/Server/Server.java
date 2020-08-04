@@ -3,6 +3,8 @@ package Server;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
 
@@ -18,11 +20,12 @@ public class Server {
 
         try {
             serverSocket = new ServerSocket(portNumber);
+            ExecutorService connections = Executors.newFixedThreadPool(500);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                Thread client = new Thread(new ClientSocket(serverSocket, clientSocket));
-                client.start();
+                connections.submit(new ClientSocket(serverSocket, clientSocket));
+                //client.start();
 
             }
         } catch (IOException e) {
